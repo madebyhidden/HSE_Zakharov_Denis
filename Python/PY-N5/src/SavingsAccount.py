@@ -1,31 +1,1 @@
-# -*- coding: cp1251 -*-
-import datetime
-import Account
-
-
-class SavingsAccount(Account.Account):
-    account_type = "Savings Account"
-    def __init__(self, account_holder, balance=0.0):
-        super().__init__(account_holder, balance)
-        self.account_number: str = f'SAVACC-{super().account_counter()}'
-
-
-    def up_savings_balance(self, amount, chacc):
-        try:
-            if amount < 0:
-                self.operations_history.append( [f"�� ������ ��������� {amount} �� ��������. ������ �� ������: {self.__balance}",
-                     datetime.datetime.strftime(datetime.datetime.now(), format="%Y-%m-%d %H:%M:%S"),
-                     "status.Code.Failed"])
-                raise ValueError()
-            else:
-                chacc.withdraw(amount, transaction=True)
-                super().deposit(amount)
-        except ValueError:
-            print("������ �� �������!")
-
-
-
-
-    def withdraw(self, amount: float):
-        if self.get_balance() - amount <= self.get_balance() * 0.5:
-            super().withdraw(amount)
+import datetimeimport Accountclass SavingsAccount(Account.Account):    account_type = "Savings Account"    __savingsBalance = 0.0    def __init__(self, account_holder, balance=0.0):        super().__init__(account_holder, balance)        self.account_number: str = f'SAVACC-{super().account_counter()}'    def up_savings_balance(self, amount, chacc):        try:            if amount < 0:                self.operations_history.append(                    [f"Не смогли перевести {amount} на сберсчёт. Баланс на момент: {self.get_balance()}",                     datetime.datetime.strftime(datetime.datetime.now(), format="%Y-%m-%d %H:%M:%S"),                     "status.Code.Failed"])                raise ValueError()            else:                if chacc.get_balance() >= amount:                    if self.__savingsBalance > amount:                        print(f"Добавлено на счет {amount}")                    else:                        print(f"Открыт счет на сумму {amount}")                    chacc.withdraw(amount, transaction=True)                    super().deposit(amount, transaction=True)                    self.__savingsBalance += amount                else:                    print("Нет денег на расчетном счету")        except ValueError:            print("Деньги не минусуем!")    def withdraw(self, amount: float, chacc):        try:            if self.get_balance() - amount >= self.__savingsBalance * 0.5:                super().withdraw(amount, transaction=True, chacc_back=True)                chacc.deposit(amount)            else:                raise ValueError()        except ValueError:            print("Я запрещаю Вам снимать больше 50%")            self.operations_history.append(                [f"Не смогли снять {amount} со сберсчёта. Баланс на момент: {self.get_balance()}",                 datetime.datetime.strftime(datetime.datetime.now(), format="%Y-%m-%d %H:%M:%S"),                 "status.Code.Failed"])    def apply_interest(self, rate):        try:            if rate > 0:                super().deposit(self.get_balance() * (rate / 100), transaction=True)                self.operations_history.append(                    [f":Добавили {rate}% на счет. Баланс на момент: {self.get_balance()}",                     datetime.datetime.strftime(datetime.datetime.now(), format="%Y-%m-%d %H:%M:%S"),                     "status.Code.Success"])                print(f"Что же натекло под камушек? {rate}% уже на счету. Баланс на момент: {self.get_balance()}")            else:                raise ValueError()        except ValueError:            print("Пу-пу-пу... Не уменьшай себе сбережения! Только плюс, только вайб")            self.operations_history.append(                [f"Не смогли добавить {rate}% на счет. Баланс на момент: {self.get_balance()}",                 datetime.datetime.strftime(datetime.datetime.now(), format="%Y-%m-%d %H:%M:%S"),                 "status.Code.Failed"])    def get_savingsBalance(self):        return self.__savingsBalance

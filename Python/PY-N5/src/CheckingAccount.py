@@ -1,11 +1,1 @@
-# -*- coding: cp1251 -*-
-import datetime
-
-import Account
-
-class CheckingAccount(Account.Account):
-    account_type = "Checking Account"
-    def __init__(self, account_holder, balance=0.0):
-        super().__init__( account_holder, balance)
-        self.account_number: str = f'CHACC-{super().account_counter()}'
-
+import datetimeimport Accountclass CheckingAccount(Account.Account):    account_type = "Checking Account"    def __init__(self, account_holder, balance=0.0):        super().__init__( account_holder, balance)        self.account_number: str = f'CHACC-{super().account_counter()}'
